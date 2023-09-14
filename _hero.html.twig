@@ -1,0 +1,38 @@
+{% extends "_main.html.twig" %}
+
+{% block section_content %}
+	aria-label="{{ module.title ? module.title|t_trans_any : module.type }}" class="hero _bg-{{ module.backgroundVerticalAlign }}"
+	    style="{{ module.backgroundColor ? '--bg-color:' ~ module.backgroundColor ~ ';' : '' }}{{ module.textColor ? '--text-color:' ~ module.textColor ~ ';' : '' }}
+	{{ module.backgroundImage ? '--desktop-img-x:' ~ module.backgroundImage.desktop.width|t_trans_any ~ '; --desktop-img-y:' ~ module.backgroundImage.desktop.height|t_trans_any ~ '; --mobile-img-x:' ~ module.backgroundImage.mobile.width|t_trans_any ~ '; --mobile-img-y:' ~ module.backgroundImage.mobile.height|t_trans_any : '' }};"
+{% endblock %}
+
+{% block content %}
+	{% if module.backgroundImage %}
+		{% set img = module.backgroundImage %}
+		{% set imageSetMobile = image_resize(img.mobile.url|t_trans_any,'_square','s')~' 400w, '~image_resize(img.mobile.url|t_trans_any,'_square','m')~' 800w, '~image_resize(img.mobile.url|t_trans_any,'_square','l')~' 1600w, '~image_resize(img.mobile.url|t_trans_any,'_square','xl')~' 3200w' %}
+		{% set imageSetDesktop = image_resize(img.desktop.url|t_trans_any,'_horizontal','m')~' 800w, '~image_resize(img.desktop.url|t_trans_any,'_horizontal','l')~' 1600w, '~image_resize(img.desktop.url|t_trans_any,'_horizontal','xl')~' 3200w' %}
+
+		<picture>
+			<div class="img-overlay"></div>
+			<source srcset="{{ imageSetMobile }}" media="(max-width: 720px)" sizes="100vw">
+			<source srcset="{{ imageSetDesktop }}" media="(min-width: 721px)" sizes="100vw">
+			<img class="lazy" data-src="{{ image_resize(img.desktop.url|t_trans_any,'_horizontal','l') }}" alt="{{ module.title ? t_trans_any(module.title) : module.type }}">
+		</picture>
+
+	{% endif %}
+	<div class="hero-info _h-{{ module.horizontalAlign }} _v-{{ module.verticalAlign }}">
+		<div class="hero-info_content">
+			{% if module.title %}
+				<h1>{{ t_trans(module.title) }}</h1>
+			{% endif %}
+			{% if module.text %}
+				<p>{{ t_trans(module.text)|raw|nl2br }}</p>
+			{% endif %}
+			{% if module.cta and module.cta.url and module.cta.title %}
+				<a data-tracking="cta-hero-button" data-index="{{ module.index }}" data-type-module="{{module.type}}" href="{{ t_trans(module.cta.url) }}" data-role="cta">
+					<b>{{ t_trans_any(module.cta.title) }}</b>
+				</a>
+			{% endif %}
+		</div>
+	</div>
+{% endblock content %}

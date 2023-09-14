@@ -1,0 +1,19 @@
+{% if module is defined and (hide_module is not defined or not hide_module)%}
+<section {% block section_content "" %}>
+    {% block content "" %}
+    {% if is_granted('ROLE_OWNER') %}
+        {% set editUrl = '' %}
+        {% if 'home' == module.pageType %}
+            {% set editUrl = url('backoffice_edit_module_home', {'moduleId' : module.id }) %}
+        {% elseif 'prod' == module.pageType %}
+            {% set editUrl = url('backoffice_edit_module_product', {'moduleId' : module.id, 'productId' : module.pageId }) %}
+        {% elseif 'pack' == module.pageType %}
+            {% set editUrl = url('backoffice_edit_module_pack', {'moduleId' : module.id, 'packId' : module.pageId }) %}
+        {% endif %}
+
+        {% if editUrl %}
+            <a class="moduleEdit" href="{{ editUrl }}" target="_blank"><i class="icon-edit"></i></a>
+        {% endif %}
+    {% endif %}
+</section>
+{% endif %}
